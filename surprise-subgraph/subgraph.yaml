@@ -1,0 +1,24 @@
+specVersion: 0.0.4
+description: Good Morning NEAR
+repository: https://github.com/graphprotocol/example-subgraph/tree/near-receipts-example
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: near
+    name: receipts
+    network: near-testnet
+    source:
+      account: "dev-1643426288773-64804739361615"
+      startBlock: 80547277
+    mapping:
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mapping.ts
+      entities:
+        - TwitterPool
+        - PrizePool
+        - Accounts
+        - FTs
+        - NFTs
+      receiptHandlers:
+        - handler: handleReceipt
