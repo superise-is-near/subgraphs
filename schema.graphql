@@ -1,0 +1,54 @@
+type TwitterPool @entity{
+   id: ID!
+   name: String!
+   describe: String!
+   cover: String!
+   prize_pool: PrizePool!
+   finish: Boolean!
+   end_time: BigInt!
+   create_time: BigInt!
+   white_list: [Account!]
+   requirement: String
+   twitter_link: String!
+   winner_account: [Account!]
+
+}
+
+type PrizePool @entity{
+   id: ID!
+   creator_id: Account!
+   ft_prize: [FT!]
+   nft_prize: [NFT!]
+   join_account: [Account!]
+}
+
+type Account @entity{
+   id: ID!
+   name: String!
+   joined_prize_pool: [PrizePool!]  @derivedFrom(field: "join_account")
+   whitelist_pool: [TwitterPool!]  @derivedFrom(field: "white_list")
+   created_pool: [PrizePool!] @derivedFrom(field: "creator_id")
+   winned_pool: [TwitterPool!] @derivedFrom(field: "winner_account")
+   winned_prize: [Record!] @derivedFrom(field: "receiver")
+}
+
+type FT @entity{
+    id: ID!
+    token_id: String!
+    amount: String!
+}
+
+type NFT @entity{
+    id: ID!
+    contract_id: String!
+    nft_id: String!    
+    prize_pools: [PrizePool!]  @derivedFrom(field: "nft_prize")
+}
+
+type Record @entity{
+   id: ID!
+   receiver: Account!
+   FT_Prize: FT
+   NFT_Prize: NFT
+}
+
