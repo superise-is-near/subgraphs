@@ -19,10 +19,12 @@ export class TwitterPool extends Entity {
     this.set("name", Value.fromString(""));
     this.set("describe", Value.fromString(""));
     this.set("cover", Value.fromString(""));
-    this.set("prize_pool", Value.fromString(""));
+    this.set("status", Value.fromString(""));
     this.set("end_time", Value.fromBigInt(BigInt.zero()));
     this.set("create_time", Value.fromBigInt(BigInt.zero()));
+    this.set("update_time", Value.fromBigInt(BigInt.zero()));
     this.set("twitter_link", Value.fromString(""));
+    this.set("creator_id", Value.fromString(""));
   }
 
   save(): void {
@@ -78,22 +80,13 @@ export class TwitterPool extends Entity {
     this.set("cover", Value.fromString(value));
   }
 
-  get prize_pool(): string {
-    let value = this.get("prize_pool");
+  get status(): string {
+    let value = this.get("status");
     return value!.toString();
   }
 
-  set prize_pool(value: string) {
-    this.set("prize_pool", Value.fromString(value));
-  }
-
-  get finish(): boolean {
-    let value = this.get("finish");
-    return value!.toBoolean();
-  }
-
-  set finish(value: boolean) {
-    this.set("finish", Value.fromBoolean(value));
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
   }
 
   get end_time(): BigInt {
@@ -112,6 +105,15 @@ export class TwitterPool extends Entity {
 
   set create_time(value: BigInt) {
     this.set("create_time", Value.fromBigInt(value));
+  }
+
+  get update_time(): BigInt {
+    let value = this.get("update_time");
+    return value!.toBigInt();
+  }
+
+  set update_time(value: BigInt) {
+    this.set("update_time", Value.fromBigInt(value));
   }
 
   get white_list(): Array<string> | null {
@@ -173,40 +175,22 @@ export class TwitterPool extends Entity {
       this.set("winner_account", Value.fromStringArray(<Array<string>>value));
     }
   }
-}
 
-export class PrizePool extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("creator_id", Value.fromString(""));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save PrizePool entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save PrizePool entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("PrizePool", id.toString(), this);
+  get winner_record(): Array<string> | null {
+    let value = this.get("winner_record");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
     }
   }
 
-  static load(id: string): PrizePool | null {
-    return changetype<PrizePool | null>(store.get("PrizePool", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
+  set winner_record(value: Array<string> | null) {
+    if (!value) {
+      this.unset("winner_record");
+    } else {
+      this.set("winner_record", Value.fromStringArray(<Array<string>>value));
+    }
   }
 
   get creator_id(): string {
@@ -400,6 +384,43 @@ export class Account extends Entity {
       this.set("winned_prize", Value.fromStringArray(<Array<string>>value));
     }
   }
+
+  get sender_activity(): Array<string> | null {
+    let value = this.get("sender_activity");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set sender_activity(value: Array<string> | null) {
+    if (!value) {
+      this.unset("sender_activity");
+    } else {
+      this.set("sender_activity", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get recevier_activity(): Array<string> | null {
+    let value = this.get("recevier_activity");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set recevier_activity(value: Array<string> | null) {
+    if (!value) {
+      this.unset("recevier_activity");
+    } else {
+      this.set(
+        "recevier_activity",
+        Value.fromStringArray(<Array<string>>value)
+      );
+    }
+  }
 }
 
 export class FT extends Entity {
@@ -533,6 +554,8 @@ export class Record extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("receiver", Value.fromString(""));
+    this.set("type", Value.fromString(""));
+    this.set("transaction_hash", Value.fromString(""));
   }
 
   save(): void {
@@ -602,5 +625,188 @@ export class Record extends Entity {
     } else {
       this.set("NFT_Prize", Value.fromString(<string>value));
     }
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value!.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
+  }
+
+  get transaction_hash(): string {
+    let value = this.get("transaction_hash");
+    return value!.toString();
+  }
+
+  set transaction_hash(value: string) {
+    this.set("transaction_hash", Value.fromString(value));
+  }
+}
+
+export class Activity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("sender", Value.fromString(""));
+    this.set("contract_id", Value.fromString(""));
+    this.set("receiver", Value.fromString(""));
+    this.set("method", Value.fromString(""));
+    this.set("transaction_hash", Value.fromString(""));
+    this.set("timestamp", Value.fromBigInt(BigInt.zero()));
+    this.set("msg", Value.fromString(""));
+    this.set("type", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Activity entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Activity entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Activity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Activity | null {
+    return changetype<Activity | null>(store.get("Activity", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get sender(): string {
+    let value = this.get("sender");
+    return value!.toString();
+  }
+
+  set sender(value: string) {
+    this.set("sender", Value.fromString(value));
+  }
+
+  get contract_id(): string {
+    let value = this.get("contract_id");
+    return value!.toString();
+  }
+
+  set contract_id(value: string) {
+    this.set("contract_id", Value.fromString(value));
+  }
+
+  get receiver(): string {
+    let value = this.get("receiver");
+    return value!.toString();
+  }
+
+  set receiver(value: string) {
+    this.set("receiver", Value.fromString(value));
+  }
+
+  get method(): string {
+    let value = this.get("method");
+    return value!.toString();
+  }
+
+  set method(value: string) {
+    this.set("method", Value.fromString(value));
+  }
+
+  get transaction_hash(): string {
+    let value = this.get("transaction_hash");
+    return value!.toString();
+  }
+
+  set transaction_hash(value: string) {
+    this.set("transaction_hash", Value.fromString(value));
+  }
+
+  get ft(): string | null {
+    let value = this.get("ft");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set ft(value: string | null) {
+    if (!value) {
+      this.unset("ft");
+    } else {
+      this.set("ft", Value.fromString(<string>value));
+    }
+  }
+
+  get nft(): string | null {
+    let value = this.get("nft");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set nft(value: string | null) {
+    if (!value) {
+      this.unset("nft");
+    } else {
+      this.set("nft", Value.fromString(<string>value));
+    }
+  }
+
+  get near(): BigInt | null {
+    let value = this.get("near");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set near(value: BigInt | null) {
+    if (!value) {
+      this.unset("near");
+    } else {
+      this.set("near", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
+  get msg(): string {
+    let value = this.get("msg");
+    return value!.toString();
+  }
+
+  set msg(value: string) {
+    this.set("msg", Value.fromString(value));
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value!.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
   }
 }
