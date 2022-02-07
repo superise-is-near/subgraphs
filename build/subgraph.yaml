@@ -8,17 +8,18 @@ dataSources:
     name: receipts
     network: near-testnet
     source:
-      account: dev-1643426288773-64804739361615
-      startBlock: 80796120
+      account: dev-1644065277774-30417867613119
+      startBlock: 81500920
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: receipts/receipts.wasm
       entities:
         - TwitterPool
-        - PrizePool
         - Accounts
         - FTs
         - NFTs
+        - Record
+        - Activity
       receiptHandlers:
         - handler: handleReceipt

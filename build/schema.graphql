@@ -3,33 +3,32 @@ type TwitterPool @entity{
    name: String!
    describe: String!
    cover: String!
-   prize_pool: PrizePool!
-   finish: Boolean!
+   status: String!
    end_time: BigInt!
    create_time: BigInt!
+   update_time: BigInt!
    white_list: [Account!]
    requirement: String
    twitter_link: String!
    winner_account: [Account!]
-
-}
-
-type PrizePool @entity{
-   id: ID!
+   winner_record: [Record!]
    creator_id: Account!
    ft_prize: [FT!]
    nft_prize: [NFT!]
    join_account: [Account!]
 }
 
+
 type Account @entity{
    id: ID!
    name: String!
-   joined_prize_pool: [PrizePool!]  @derivedFrom(field: "join_account")
+   joined_prize_pool: [TwitterPool!]  @derivedFrom(field: "join_account")
    whitelist_pool: [TwitterPool!]  @derivedFrom(field: "white_list")
-   created_pool: [PrizePool!] @derivedFrom(field: "creator_id")
+   created_pool: [TwitterPool!] @derivedFrom(field: "creator_id")
    winned_pool: [TwitterPool!] @derivedFrom(field: "winner_account")
    winned_prize: [Record!] @derivedFrom(field: "receiver")
+   sender_activity: [Activity!] @derivedFrom(field: "sender")
+   recevier_activity: [Activity!] @derivedFrom(field: "receiver")
 }
 
 type FT @entity{
@@ -42,7 +41,7 @@ type NFT @entity{
     id: ID!
     contract_id: String!
     nft_id: String!    
-    prize_pools: [PrizePool!]  @derivedFrom(field: "nft_prize")
+    prize_pools: [TwitterPool!]  @derivedFrom(field: "nft_prize")
 }
 
 type Record @entity{
@@ -50,5 +49,24 @@ type Record @entity{
    receiver: Account!
    FT_Prize: FT
    NFT_Prize: NFT
+   type: String!
+   transaction_hash: String!
 }
+
+
+type Activity @entity{
+   id: ID!
+   sender: Account!
+   contract_id: Account!
+   receiver: Account!
+   method: String!
+   transaction_hash: String!
+   ft: FT
+   nft: NFT
+   near: BigInt
+   timestamp: BigInt!
+   msg: String!
+   type: String!
+}
+
 
