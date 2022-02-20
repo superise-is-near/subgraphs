@@ -1,6 +1,6 @@
 specVersion: 0.0.4
-description: Good Morning NEAR
-repository: https://github.com/graphprotocol/example-subgraph/tree/near-receipts-example
+description: Sub-graph for Superise
+repository: https://github.com/superise-is-near/subgraphs
 schema:
   file: ./schema.graphql
 dataSources:
@@ -8,17 +8,18 @@ dataSources:
     name: receipts
     network: near-testnet
     source:
-      account: "dev-1643426288773-64804739361615"
-      startBlock: 80796120
+      account: "dev-1645186192945-72176904493772"
+      startBlock: 83025107
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mapping.ts
       entities:
         - TwitterPool
-        - PrizePool
         - Accounts
         - FTs
         - NFTs
+        - Record
+        - Activity
       receiptHandlers:
         - handler: handleReceipt
