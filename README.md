@@ -1,5 +1,5 @@
 # Subgraph for Surprise
-This is the sub-graph for surprise index service
+This is the sub-graph for surprise index service, mainly implemetn the function of account history, just try it on [here](https://thegraph.com/hosted-service/subgraph/dispa1r/superise)
 
 ## How to build
 * config the contract address and start block in ```subgraph.yaml```
@@ -8,30 +8,8 @@ This is the sub-graph for surprise index service
 * graph deploy --product hosted-service ****
 * go to the hosted-service playground to query
 
-## Create Twitter Pool
-```
-{
-  twitterPools(first: 5) {
-    id
-    name
-    describe
-    cover
-    prize_pool{
-      creator_id{
-        id
-      }
-      ft_prizes{
-        id
-        token_id
-      }
-      nft_prizes{
-        id
-        contract_id
-      }
-    }
-    twitter_link
-    
-  }
- 
-}
-```
+## Features
+* allow user to query the prizepool they created, joined, whitelisted and winned
+* add the record and activity, any user could clearly check where their assets come from and go to
+* user could check the distribution of the prizes
+* you can find the prize-pools which have been deleted in contracts
